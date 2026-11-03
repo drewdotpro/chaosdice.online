@@ -9,7 +9,7 @@ sell them on their own (as standalone files). Download them from Pixabay instead
 
 | File | Original | Author | Changes |
 |---|---|---|---|
-| `dice-roll.mp3` | Pixabay (original listing not recorded) | Unknown | None |
+| `dice-roll.mp3` | ["Dice"](https://pixabay.com/sound-effects/dice-95077/) | AbdrTar (via the freesound_community profile) | None |
 | `change-magic.mp3` | ["fire magic (5)"](https://pixabay.com/sound-effects/fire-magic-5-378639/) | Yodguard | Trimmed to the first ~1.1s; fade-out added |
 
 Thanks to the authors for sharing their work.
