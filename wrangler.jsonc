@@ -9,5 +9,10 @@
     "directory": "./dist",
     // Unknown paths get a real 404 rather than the home page (better for SEO).
     "not_found_handling": "none"
-  }
+  },
+  // The *.workers.dev address. Keep it on until chaosdice.online is attached as a
+  // custom domain, then set it to false so the site lives at one address only.
+  "workers_dev": true,
+  // Per-version preview URLs, used by preview builds for branches and pull requests.
+  "preview_urls": true
 }
