@@ -85,6 +85,9 @@ if (AudioCtx) {
   for (const [name, url] of Object.entries(SOUND_URLS)) {
     soundData[name] = fetch(url).then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => null);
   }
+  // iOS (every iPhone browser uses Safari's engine) only unlocks reliably on
+  // touchend/click, and can later put the context into an "interrupted" state
+  // (calls, app switches), so we keep listening and re-resume whenever needed.
   const GESTURES = ['pointerdown', 'pointerup', 'mousedown', 'touchend', 'keydown', 'click'];
   const unlock = () => {
     if (!audio) {
@@ -94,14 +97,23 @@ if (AudioCtx) {
         return;
       }
       for (const [name, data] of Object.entries(soundData)) {
+        // Callback form: older Safari's decodeAudioData doesn't return a promise.
         buffers[name] = data
-          .then((d) => (d ? audio.decodeAudioData(d) : null))
+          .then((d) => (d ? new Promise((res, rej) => audio.decodeAudioData(d, res, rej)) : null))
           .catch(() => null);
       }
     }
-    if (audio.state === 'suspended') audio.resume().catch(() => {});
-    // Once running, no further listening is needed.
-    if (audio.state === 'running') for (const t of GESTURES) document.removeEventListener(t, unlock, true);
+    if (audio.state !== 'running') {
+      audio.resume?.().catch(() => {});
+      // Older iOS only fully unlocks if something actually plays during the
+      // gesture: play one silent sample.
+      try {
+        const src = audio.createBufferSource();
+        src.buffer = audio.createBuffer(1, 1, 22050);
+        src.connect(audio.destination);
+        src.start(0);
+      } catch { /* ignore */ }
+    }
   };
   for (const t of GESTURES) document.addEventListener(t, unlock, { capture: true, passive: true });
 }
@@ -121,7 +133,7 @@ els.muteBtn.addEventListener('click', () => {
 renderMute();
 function playSound(name) {
   if (muted || !audio || !buffers[name]) return;
-  if (audio.state === 'suspended') audio.resume().catch(() => {});
+  if (audio.state !== 'running') audio.resume?.().catch(() => {});
   const requested = performance.now();
   // The very first sound can be requested while its file is still decoding (the
   // gesture that created the context is the same click that rolled). Wait for it,
