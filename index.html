@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#120d0b" />
+    <title>Chaos Dice!</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <section class="landing" id="landing" hidden>
+      <div class="landing-inner">
+        <h1 class="landing-title">Chaos Dice!</h1>
+        <p class="landing-tag">One die. Six faces. Every roll bends fate a little further.</p>
+        <div class="landing-actions">
+          <button class="btn primary play" id="playBtn" type="button">Play</button>
+          <button class="btn ghost how" type="button" data-info>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7.6" r="1.3" fill="currentColor"/><path d="M12 11v6.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            How it works
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <div id="app">
+      <header class="topbar">
+        <div class="brand">
+          <h1 class="title">Chaos Dice!</h1>
+          <button class="icon-btn info-btn" type="button" data-info aria-label="How Chaos Dice works" title="How it works">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7.6" r="1.3" fill="currentColor"/><path d="M12 11v6.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+        <button class="icon-btn" id="muteBtn" type="button" aria-pressed="false" aria-label="Mute sound">
+          <svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <div class="character" id="character" hidden>
+          <div class="stat">
+            <span class="label">Character</span>
+            <span class="value" id="charName"></span>
+          </div>
+          <div class="stat">
+            <span class="label">Rolls</span>
+            <span class="value" id="rollCount">0</span>
+          </div>
+          <button class="btn ghost small" id="resetBtn" type="button">Reset</button>
+        </div>
+      </header>
+
+      <main class="layout">
+        <section class="stage">
+          <div class="dice-wrap" id="diceWrap" role="button" tabindex="0" aria-label="Roll the die"></div>
+          <div class="result" aria-live="polite">
+            <div class="result-label" id="resultLabel">Roll the die</div>
+            <div class="result-value" id="resultValue">&nbsp;</div>
+          </div>
+          <button class="btn primary roll" id="rollBtn" type="button">Roll</button>
+          <p class="hint">Tap the die, press the button, or hit <kbd>Space</kbd>.</p>
+        </section>
+
+        <aside class="panel">
+          <section class="card">
+            <h2>Faces</h2>
+            <div class="hud" id="hud"></div>
+            <p class="note">After each roll, the face shown gains 1 and its opposite loses 1.</p>
+          </section>
+          <section class="card history-card">
+            <h2>History</h2>
+            <ol class="history" id="history"></ol>
+            <p class="empty" id="historyEmpty">No rolls yet.</p>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <dialog class="modal" id="startModal">
+      <form method="dialog" id="startForm" novalidate>
+        <h2>Who rolls the bones?</h2>
+        <p class="sub">
+          Your character's name is your seed. Same name, same fate. Coming back without a save?
+          Enter your last roll count to pick up where you left off.
+        </p>
+        <label>
+          <span>Character name</span>
+          <input id="nameInput" name="name" autocomplete="off" maxlength="80" required placeholder="e.g. Thalia Ironwood" />
+        </label>
+        <label>
+          <span>Roll count <em>(leave blank for new player)</em></span>
+          <input id="rollsInput" name="rolls" type="number" inputmode="numeric" min="0" step="1" value="" />
+        </label>
+        <p class="error" id="formError" role="alert"></p>
+        <div class="actions">
+          <button class="btn ghost" type="button" id="startBack">Back</button>
+          <button class="btn primary" type="submit">Begin</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal info-modal" id="infoModal" aria-labelledby="infoTitle">
+      <form method="dialog">
+        <h2 id="infoTitle">How Chaos Dice! works</h2>
+        <div class="info-body">
+          <p>
+            This is a six-sided die with faces <strong>A–F</strong>, and every face starts at
+            <strong>0</strong>. The numbers don't stay put.
+          </p>
+          <ol>
+            <li><strong>Roll.</strong> The die lands with one face on top. That face's number is your result.</li>
+            <li>
+              <strong>Then the chaos.</strong> The face you rolled gains <strong>+1</strong>, and the face
+              opposite it loses <strong>1</strong>. Opposites are A↔F, B↔E and C↔D.
+            </li>
+            <li><strong>Repeat.</strong> Over many rolls, faces drift far above or below zero.</li>
+          </ol>
+          <p>
+            <span class="swatch pos">Blue</span> numbers are positive, and bluer means higher.
+            <span class="swatch neg">Red</span> numbers are negative, and redder means lower.
+            <span class="swatch zero">Black</span> is zero.
+          </p>
+          <h3>Your fate is sealed</h3>
+          <p>
+            Your character's name is the seed. The same name always gives the same rolls in the same
+            order. Capitals and extra spaces don't matter. Progress is saved on this device.
+          </p>
+          <p>
+            Playing on another device, or lost your save? Enter the same name and your roll count, and
+            your die is rebuilt exactly as you left it. It runs on the honour system.
+          </p>
+          <h3>Controls</h3>
+          <p>
+            Tap the die, press <strong>Roll</strong>, or hit <kbd>Space</kbd>. The speaker button turns
+            sound on and off. <strong>Reset</strong> clears your saved character from this device.
+          </p>
+        </div>
+        <div class="actions">
+          <button class="btn primary" value="close">Got it</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal" id="resetModal">
+      <form method="dialog">
+        <h2>Reset?</h2>
+        <p class="sub">
+          This clears your saved character from this device. Write down your name and roll count
+          (<strong id="resetSummary"></strong>) if you want to resume later.
+        </p>
+        <div class="actions">
+          <button class="btn ghost" value="cancel">Cancel</button>
+          <button class="btn danger" value="confirm">Reset</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
