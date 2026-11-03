@@ -18,12 +18,14 @@ and its opposite (A↔F, B↔E, C↔D) loses 1, so over many rolls the numbers r
 
 ## Deploy
 
-The site is fully static and is hosted on Cloudflare Pages:
+The site is fully static. It's deployed as a static-assets Cloudflare Worker, configured in
+`wrangler.jsonc`. Cloudflare Workers Builds is connected to this repo:
 
 - Build command: `npm run build`
-- Output directory: `dist`
+- Deploy command: `npx wrangler deploy` (uploads `dist/`)
 
-`public/_headers` sets the caching and security headers.
+`public/_headers` sets the caching and security headers. To try the production setup locally,
+run `npm run build && npx wrangler dev`.
 
 ## Social and app images
 

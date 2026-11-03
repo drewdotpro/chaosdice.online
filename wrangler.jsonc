@@ -1,0 +1,13 @@
+// Cloudflare Workers deployment: a static-assets-only Worker serving the Vite build.
+// Workers Builds runs `npm run build`, then `npx wrangler deploy` uploads ./dist.
+// The name must match the Worker/project name in the Cloudflare dashboard.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "chaosdice-online",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Unknown paths get a real 404 rather than the home page (better for SEO).
+    "not_found_handling": "none"
+  }
+}
