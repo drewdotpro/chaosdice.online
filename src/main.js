@@ -71,24 +71,39 @@ function createDie(container) {
 // Web Audio rather than <audio>: lower latency, and once unlocked by a tap it can
 // play later (the transformation sound fires ~2s after the click), which iOS
 // Safari blocks for media elements that weren't started inside a gesture.
+//
+// Autoplay rules: an AudioContext may only start in response to a user gesture.
+// So the files are downloaded up front, but the context is created (and the files
+// decoded) inside the first gesture, never at page load.
 const MUTE_KEY = 'chaos-dice:muted';
 const SOUND_URLS = { roll: rollSoundUrl, change: changeSoundUrl };
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
-const audio = AudioCtx ? new AudioCtx() : null;
-const buffers = {};
-if (audio) {
+let audio = null;
+const buffers = {}; // name -> Promise<AudioBuffer | null>
+const soundData = {}; // name -> Promise<ArrayBuffer | null>, fetched early
+if (AudioCtx) {
   for (const [name, url] of Object.entries(SOUND_URLS)) {
-    fetch(url)
-      .then((r) => r.arrayBuffer())
-      .then((data) => audio.decodeAudioData(data))
-      .then((buf) => { buffers[name] = buf; })
-      .catch(() => { /* sound is optional */ });
+    soundData[name] = fetch(url).then((r) => (r.ok ? r.arrayBuffer() : null)).catch(() => null);
   }
-  // Browsers start audio suspended until the user interacts with the page.
-  const unlock = () => { if (audio.state === 'suspended') audio.resume().catch(() => {}); };
-  for (const type of ['pointerdown', 'keydown', 'touchend']) {
-    document.addEventListener(type, unlock, { capture: true, passive: true });
-  }
+  const GESTURES = ['pointerdown', 'pointerup', 'mousedown', 'touchend', 'keydown', 'click'];
+  const unlock = () => {
+    if (!audio) {
+      try {
+        audio = new AudioCtx();
+      } catch {
+        return;
+      }
+      for (const [name, data] of Object.entries(soundData)) {
+        buffers[name] = data
+          .then((d) => (d ? audio.decodeAudioData(d) : null))
+          .catch(() => null);
+      }
+    }
+    if (audio.state === 'suspended') audio.resume().catch(() => {});
+    // Once running, no further listening is needed.
+    if (audio.state === 'running') for (const t of GESTURES) document.removeEventListener(t, unlock, true);
+  };
+  for (const t of GESTURES) document.addEventListener(t, unlock, { capture: true, passive: true });
 }
 let muted = false;
 try { muted = localStorage.getItem(MUTE_KEY) === '1'; } catch { /* ignore */ }
@@ -107,10 +122,17 @@ renderMute();
 function playSound(name) {
   if (muted || !audio || !buffers[name]) return;
   if (audio.state === 'suspended') audio.resume().catch(() => {});
-  const src = audio.createBufferSource();
-  src.buffer = buffers[name];
-  src.connect(audio.destination);
-  src.start();
+  const requested = performance.now();
+  // The very first sound can be requested while its file is still decoding (the
+  // gesture that created the context is the same click that rolled). Wait for it,
+  // but don't play a sound that would arrive noticeably late.
+  buffers[name].then((buf) => {
+    if (!buf || muted || performance.now() - requested > 300) return;
+    const src = audio.createBufferSource();
+    src.buffer = buf;
+    src.connect(audio.destination);
+    src.start();
+  });
 }
 
 // ---------- storage (fails soft: private mode etc.) ----------
