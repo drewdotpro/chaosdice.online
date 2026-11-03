@@ -4,21 +4,85 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#120d0b" />
-    <title>Chaos Dice!</title>
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Marcellus&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
-      rel="stylesheet"
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Primary SEO -->
+    <title>Chaos Dice Online! – A Free D6 That Drifts Into Chaos</title>
+    <meta
+      name="description"
+      content="Roll a free online D6 for D&amp;D and tabletop RPGs where every roll changes the die. The face you roll gains 1, its opposite loses 1, and the numbers drift into chaos."
     />
+    <link rel="canonical" href="https://chaosdice.online/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="application-name" content="Chaos Dice Online!" />
+
+    <!-- Open Graph / social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Chaos Dice Online!" />
+    <meta property="og:url" content="https://chaosdice.online/" />
+    <meta property="og:title" content="Chaos Dice Online! – A Free D6 That Drifts Into Chaos" />
+    <meta
+      property="og:description"
+      content="One die. Six faces. Every roll bends fate a little further. A free, seeded D6 for D&amp;D and tabletop RPGs."
+    />
+    <meta property="og:image" content="https://chaosdice.online/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="An ivory die on a crimson felt table beside the words Chaos Dice Online!" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Chaos Dice Online! – A Free D6 That Drifts Into Chaos" />
+    <meta
+      name="twitter:description"
+      content="One die. Six faces. Every roll bends fate a little further. A free, seeded D6 for D&amp;D and tabletop RPGs."
+    />
+    <meta name="twitter:image" content="https://chaosdice.online/og-image.png" />
+
+    <!-- Icons & app manifest -->
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Chaos Dice Online!",
+        "url": "https://chaosdice.online/",
+        "description": "A free online D6 for D&D and tabletop RPGs where every roll changes the die: the rolled face gains 1 and its opposite loses 1, so the numbers drift into chaos.",
+        "applicationCategory": "GameApplication",
+        "genre": "Tabletop RPG dice roller",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript and WebGL",
+        "isAccessibleForFree": true,
+        "inLanguage": "en",
+        "image": "https://chaosdice.online/og-image.png",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "sameAs": ["https://github.com/drewdotpro/chaosdice.online"]
+      }
+    </script>
+
+    <!-- Fonts are self-hosted (see the @imports in style.css): no third-party requests. -->
     <link rel="stylesheet" href="/src/style.css" />
   </head>
-  <body>
-    <section class="landing" id="landing" hidden>
+  <body class="landing-mode">
+    <script>
+      // Returning players skip the landing screen, decided before first paint so nothing flashes.
+      // Keep the key in sync with STORAGE_KEY in src/main.js.
+      try { if (localStorage.getItem('chaos-dice:v1')) document.body.classList.remove('landing-mode'); } catch (e) {}
+    </script>
+    <section class="landing" id="landing">
       <div class="landing-inner">
-        <h1 class="landing-title">Chaos Dice!</h1>
+        <h1 class="landing-title"><span>Chaos Dice</span> <span>Online!</span></h1>
         <p class="landing-tag">One die. Six faces. Every roll bends fate a little further.</p>
+        <p class="landing-desc">
+          A free online D6 for D&amp;D and tabletop RPGs. Every face starts at zero. Each roll, the face
+          you roll gains one and its opposite loses one, until the numbers run wild. Your character's
+          name seeds your fate.
+        </p>
+        <noscript><p class="landing-noscript">Chaos Dice Online! needs JavaScript enabled to roll the die.</p></noscript>
         <div class="landing-actions">
           <button class="btn primary play" id="playBtn" type="button">Play</button>
           <button class="btn ghost how" type="button" data-info>
@@ -26,14 +90,18 @@
             How it works
           </button>
         </div>
+        <a class="repo-link" href="https://github.com/drewdotpro/chaosdice.online" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          Free and open source on GitHub
+        </a>
       </div>
     </section>
 
     <div id="app">
       <header class="topbar">
         <div class="brand">
-          <h1 class="title">Chaos Dice!</h1>
-          <button class="icon-btn info-btn" type="button" data-info aria-label="How Chaos Dice works" title="How it works">
+          <p class="title">Chaos Dice Online!</p>
+          <button class="icon-btn info-btn" type="button" data-info aria-label="How Chaos Dice Online works" title="How it works">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7.6" r="1.3" fill="currentColor"/><path d="M12 11v6.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
           </button>
         </div>
@@ -56,7 +124,8 @@
 
       <main class="layout">
         <section class="stage">
-          <div class="dice-wrap" id="diceWrap" role="button" tabindex="0" aria-label="Roll the die"></div>
+          <!-- Decorative for assistive tech: the Roll button is the accessible control and the result is announced below. -->
+          <div class="dice-wrap" id="diceWrap" aria-hidden="true"></div>
           <div class="result" aria-live="polite">
             <div class="result-label" id="resultLabel">Roll the die</div>
             <div class="result-value" id="resultValue">&nbsp;</div>
@@ -92,7 +161,7 @@
           <input id="nameInput" name="name" autocomplete="off" maxlength="80" required placeholder="e.g. Thalia Ironwood" />
         </label>
         <label>
-          <span>Roll count <em>(leave blank for new player)</em></span>
+          <span>Roll count <em>(leave blank for a new player)</em></span>
           <input id="rollsInput" name="rolls" type="number" inputmode="numeric" min="0" step="1" value="" />
         </label>
         <p class="error" id="formError" role="alert"></p>
@@ -105,7 +174,7 @@
 
     <dialog class="modal info-modal" id="infoModal" aria-labelledby="infoTitle">
       <form method="dialog">
-        <h2 id="infoTitle">How Chaos Dice! works</h2>
+        <h2 id="infoTitle">How Chaos Dice Online! works</h2>
         <div class="info-body">
           <p>
             This is a six-sided die with faces <strong>A–F</strong>, and every face starts at

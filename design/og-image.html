@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Social share image source (1200×630). Rendered to public/og-image.png. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=EB+Garamond:ital@1&display=swap" rel="stylesheet" />
+<style>
+  html, body { margin: 0; }
+  .card {
+    width: 1200px; height: 630px; position: relative; overflow: hidden;
+    background: radial-gradient(ellipse at 30% 50%, #3a2416 0%, #2a1a12 35%, #120d0b 85%);
+    color: #f1e6cf; font-family: 'EB Garamond', Georgia, serif;
+  }
+  .die {
+    position: absolute; left: -70px; top: 30px; width: 760px; height: 524px;
+    background: url(die-shot.png) center / cover;
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%);
+  }
+  .text { position: absolute; left: 620px; right: 56px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+  h1 {
+    margin: 0; font-family: 'Cinzel', serif; font-weight: 700; font-size: 92px; line-height: 0.98;
+    letter-spacing: 0.04em; color: #e4b965;
+    text-shadow: 0 4px 0 #000, 0 0 40px rgba(200, 144, 42, 0.5), 0 0 90px rgba(160, 90, 255, 0.3);
+  }
+  h1 span { display: block; }
+  p { margin: 0; font-style: italic; font-size: 34px; line-height: 1.25; color: rgba(241, 230, 207, 0.9); }
+  .url {
+    font-family: 'Cinzel', serif; font-style: normal; font-size: 26px; letter-spacing: 0.12em;
+    color: #c8902a; border-top: 1px solid rgba(200, 144, 42, 0.45); padding-top: 18px;
+  }
+  .ember { position: absolute; border-radius: 50%; background: #ffd27a; box-shadow: 0 0 10px 3px rgba(255, 170, 60, 0.5); }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="die"></div>
+    <div class="text">
+      <h1><span>Chaos Dice</span><span>Online!</span></h1>
+      <p>One die. Six faces.<br />Every roll bends fate a little further.</p>
+      <div class="url">chaosdice.online</div>
+    </div>
+    <i class="ember" style="left:1120px;top:70px;width:4px;height:4px"></i>
+    <i class="ember" style="left:1060px;top:560px;width:3px;height:3px"></i>
+    <i class="ember" style="left:700px;top:585px;width:4px;height:4px"></i>
+    <i class="ember" style="left:880px;top:40px;width:3px;height:3px"></i>
+    <i class="ember" style="left:1160px;top:330px;width:2px;height:2px"></i>
+  </div>
+</body>
+</html>

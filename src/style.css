@@ -1,3 +1,11 @@
+/* Self-hosted fonts (SIL Open Font License), so visitors make no third-party requests. */
+@import '@fontsource/cinzel/500.css';
+@import '@fontsource/cinzel/700.css';
+@import '@fontsource/marcellus/400.css';
+@import '@fontsource/eb-garamond/400.css';
+@import '@fontsource/eb-garamond/600.css';
+@import '@fontsource/eb-garamond/400-italic.css';
+
 :root {
   --table: #120d0b;
   --table-2: #2a1a12;
@@ -128,9 +136,7 @@ body {
   min-height: 260px;
   cursor: pointer;
   border-radius: var(--radius);
-  outline: none;
 }
-.dice-wrap:focus-visible { box-shadow: 0 0 0 3px var(--gold-soft); }
 .dice-wrap canvas { display: block; width: 100% !important; height: 100% !important; }
 
 .result {
@@ -320,8 +326,8 @@ kbd {
 .fx {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 0;
 }
@@ -397,14 +403,14 @@ body.landing-mode #app { display: none; }
   padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
   text-align: center;
 }
-.landing[hidden] { display: none; }
+body:not(.landing-mode) .landing { display: none; }
 .landing-inner { display: flex; flex-direction: column; align-items: center; gap: 18px; max-width: 640px; }
 .landing-title {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: clamp(2.6rem, 11.5vw, 6.5rem);
-  line-height: 1;
+  font-size: clamp(2.3rem, 10vw, 6rem);
+  line-height: 1.02;
   letter-spacing: 0.06em;
   color: var(--gold-soft);
   text-shadow: 0 3px 0 #000, 0 0 40px rgba(200, 144, 42, 0.45), 0 0 90px rgba(160, 90, 255, 0.25);
@@ -430,3 +436,46 @@ body.landing-mode #app { display: none; }
 /* Ghost buttons on parchment need darker ink. */
 .modal .btn.ghost { color: #7a4f14; border-color: rgba(122, 79, 20, 0.6); }
 .modal .btn.ghost:hover { background: rgba(122, 79, 20, 0.1); }
+
+.landing-title span { display: block; white-space: nowrap; }
+.landing-desc {
+  margin: 0;
+  max-width: 34em;
+  font-size: clamp(0.98rem, 3.2vw, 1.08rem);
+  line-height: 1.55;
+  color: rgba(241, 230, 207, 0.68);
+}
+.landing-noscript { margin: 0; color: #ffb4a8; font-weight: 600; }
+.repo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  font-size: 0.98rem;
+  color: rgba(241, 230, 207, 0.7);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.repo-link svg { width: 18px; height: 18px; }
+.repo-link:hover, .repo-link:focus-visible { color: var(--gold-soft); border-bottom-color: currentColor; outline: none; }
+
+/* Longer title: keep the game header tidy on small screens. */
+@media (max-width: 480px) {
+  .topbar { gap: 10px 12px; }
+  .topbar .title { font-size: 1.12rem; letter-spacing: 0.04em; }
+  .brand { gap: 8px; }
+  .topbar .icon-btn { width: 34px; height: 34px; }
+  .topbar .icon-btn svg { width: 19px; height: 19px; }
+}
+
+/* Shown in the die area if the browser can't start WebGL. */
+.no-webgl {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  font-style: italic;
+  color: rgba(241, 230, 207, 0.75);
+}

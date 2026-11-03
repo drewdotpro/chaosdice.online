@@ -121,6 +121,9 @@ export class Die {
 
     this.now = () => performance.now() / 1000;
     this.anim = null;
+    // Render on demand: frames are drawn only while animating or after a change,
+    // so an idle die (or one hidden behind the landing screen) costs no GPU time.
+    this.dirty = true;
     this.renderer.setAnimationLoop(() => this.tick());
   }
 
@@ -128,6 +131,7 @@ export class Die {
     const { clientWidth: w, clientHeight: h } = this.container;
     if (!w || !h) return;
     this.renderer.setSize(w, h, false);
+    this.dirty = true;
     this.camera.aspect = w / h;
     // Widen the view on narrow (portrait) screens so the toss stays in frame.
     this.camera.fov = w / h < 1 ? 34 / Math.max(w / h, 0.55) * 0.95 : 34;
@@ -146,6 +150,7 @@ export class Die {
   showFace(i) {
     this.die.quaternion.copy(this.targetFor(i, (Math.random() - 0.5) * 0.2));
     this.die.position.set(0, 0, 0);
+    this.dirty = true;
   }
 
   setValues(values, highlight = -1) {
@@ -257,6 +262,7 @@ export class Die {
     }
 
     this.faceTextures[i].needsUpdate = true;
+    this.dirty = true;
   }
 
   /** Page coordinates of a point on the die (default: where it meets the table). */
@@ -297,11 +303,14 @@ export class Die {
         wobbleAxis: new THREE.Vector3(Math.random() - 0.5, 0, Math.random() - 0.5).normalize(),
       };
       this.rolling = true;
+      this.dirty = true;
     });
   }
 
   tick() {
     const t = this.now();
+    // Anything animating this frame (including its final frame) needs a render.
+    if (this.anim || this.morph) this.dirty = true;
     if (this.anim) {
       const a = this.anim;
       const p = Math.min(1, (t - a.t0) / a.dur);
@@ -348,6 +357,8 @@ export class Die {
         this.arcLight.intensity = 18 * swell + 30 * flash;
       }
     }
+    if (!this.dirty || !this.container.clientWidth) return;
+    this.dirty = false;
     this.renderer.render(this.scene, this.camera);
   }
 }

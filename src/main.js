@@ -4,7 +4,7 @@ import { Effects } from './effects.js';
 import rollSoundUrl from './assets/dice-roll.mp3';
 import changeSoundUrl from './assets/change-magic.mp3';
 
-const STORAGE_KEY = 'chaos-dice:v1';
+const STORAGE_KEY = 'chaos-dice:v1'; // also read by the inline script in index.html
 const $ = (id) => document.getElementById(id);
 
 const els = {
@@ -31,18 +31,65 @@ const els = {
 
 let state = null; // { name, seed, rolls, values, history }
 let lastFace = -1;
-const die = new Die(els.diceWrap);
+const die = createDie(els.diceWrap);
 const fx = new Effects();
 if (import.meta.env.DEV) window.__chaos = { die, fx }; // handy for debugging
 die.onImpact = (pt, strength) => fx.burst(pt.x, pt.y, Math.round(10 + 22 * strength), 0.5 + 0.6 * strength);
 
+/**
+ * The 3D die, or (if WebGL is unavailable) a stand-in with the same interface
+ * so the game still plays. Results, faces and history all live in the DOM.
+ */
+function createDie(container) {
+  try {
+    return new Die(container);
+  } catch (err) {
+    console.warn('3D die unavailable, using a simple fallback.', err);
+    container.innerHTML = '<p class="no-webgl">Your browser couldn’t start 3D graphics, but the dice still roll. Your results appear below.</p>';
+    const center = () => {
+      const r = container.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    };
+    return {
+      rolling: false,
+      onImpact: null,
+      setValues() {},
+      redrawAll() {},
+      showFace() {},
+      finishMorph() {},
+      morphFace() { return Promise.resolve(); },
+      screenPoint: center,
+      roll() {
+        this.rolling = true;
+        return new Promise((resolve) => setTimeout(() => { this.rolling = false; resolve(); }, 300));
+      },
+    };
+  }
+}
+
 // ---------- sound ----------
+// Web Audio rather than <audio>: lower latency, and once unlocked by a tap it can
+// play later (the transformation sound fires ~2s after the click), which iOS
+// Safari blocks for media elements that weren't started inside a gesture.
 const MUTE_KEY = 'chaos-dice:muted';
-const sounds = {
-  roll: new Audio(rollSoundUrl),
-  change: new Audio(changeSoundUrl),
-};
-for (const a of Object.values(sounds)) a.preload = 'auto';
+const SOUND_URLS = { roll: rollSoundUrl, change: changeSoundUrl };
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+const audio = AudioCtx ? new AudioCtx() : null;
+const buffers = {};
+if (audio) {
+  for (const [name, url] of Object.entries(SOUND_URLS)) {
+    fetch(url)
+      .then((r) => r.arrayBuffer())
+      .then((data) => audio.decodeAudioData(data))
+      .then((buf) => { buffers[name] = buf; })
+      .catch(() => { /* sound is optional */ });
+  }
+  // Browsers start audio suspended until the user interacts with the page.
+  const unlock = () => { if (audio.state === 'suspended') audio.resume().catch(() => {}); };
+  for (const type of ['pointerdown', 'keydown', 'touchend']) {
+    document.addEventListener(type, unlock, { capture: true, passive: true });
+  }
+}
 let muted = false;
 try { muted = localStorage.getItem(MUTE_KEY) === '1'; } catch { /* ignore */ }
 function renderMute() {
@@ -58,10 +105,12 @@ els.muteBtn.addEventListener('click', () => {
 });
 renderMute();
 function playSound(name) {
-  if (muted) return;
-  const a = sounds[name];
-  a.currentTime = 0;
-  a.play().catch(() => { /* autoplay blocked or unsupported; silent is fine */ });
+  if (muted || !audio || !buffers[name]) return;
+  if (audio.state === 'suspended') audio.resume().catch(() => {});
+  const src = audio.createBufferSource();
+  src.buffer = buffers[name];
+  src.connect(audio.destination);
+  src.start();
 }
 
 // ---------- storage (fails soft: private mode etc.) ----------
@@ -184,6 +233,7 @@ function cancelSettle() {
 async function doRoll() {
   if (!state || die.rolling) return;
   completeSettle();
+  const game = state; // if a reset/new character happens mid-roll, this roll is abandoned
   const before = state.values.slice();
   const entry = roll(state);
   playSound('roll');
@@ -194,7 +244,7 @@ async function doRoll() {
   // Tumble showing the pre-roll values; the face lands showing the result.
   die.setValues(before, -1);
   await die.roll(entry.face);
-  if (!state) return; // reset while rolling
+  if (state !== game) return; // reset while rolling
 
   // Landed: the result, history and count update now; the die still shows
   // the rolled value.
@@ -239,14 +289,11 @@ function openStart(prefill = {}) {
 }
 
 // ---------- landing screen ----------
-const landing = $('landing');
 function showLanding() {
-  landing.hidden = false;
   document.body.classList.add('landing-mode');
   els.rollBtn.disabled = true;
 }
 function hideLanding() {
-  landing.hidden = true;
   document.body.classList.remove('landing-mode');
 }
 $('playBtn').addEventListener('click', () => openStart());
@@ -258,7 +305,8 @@ els.startForm.addEventListener('submit', (e) => {
   const rolls = rollsRaw === '' ? 0 : Number(rollsRaw);
   let err = '';
   if (!name) err = 'Your character needs a name.';
-  else if (!Number.isInteger(rolls) || rolls < 0) err = 'Roll count must be a whole number, 0 or more.';
+  // A number input reports '' for unparseable text (e.g. letters in Firefox), so check badInput too.
+  else if (els.rollsInput.validity.badInput || !Number.isInteger(rolls) || rolls < 0) err = 'Roll count must be a whole number, 0 or more.';
   else if (rolls > MAX_ROLLS) err = `Roll count can't exceed ${MAX_ROLLS.toLocaleString('en-US')}.`;
   if (err) {
     e.preventDefault();
@@ -271,13 +319,12 @@ els.startForm.addEventListener('submit', (e) => {
 
 els.rollBtn.addEventListener('click', doRoll);
 els.diceWrap.addEventListener('click', doRoll);
-els.diceWrap.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); doRoll(); }
-});
+// Space rolls from anywhere, except where Space already means something:
+// on a focused button/link/field it must keep its normal behaviour.
 document.addEventListener('keydown', (e) => {
-  if (e.code !== 'Space' || e.repeat) return;
+  if (e.code !== 'Space' || e.repeat || !state) return;
   if (document.querySelector('dialog[open]')) return;
-  if (e.target instanceof HTMLInputElement) return;
+  if (e.target instanceof Element && e.target.closest('button, a, input, textarea, select, [contenteditable]')) return;
   e.preventDefault();
   doRoll();
 });
