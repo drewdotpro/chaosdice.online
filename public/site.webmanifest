@@ -1,7 +1,7 @@
 {
   "name": "Chaos Dice Online!",
   "short_name": "Chaos Dice",
-  "description": "A free online D6 where every roll changes the die.",
+  "description": "A free D6 that changes every time you roll.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -7,10 +7,10 @@
     <meta name="color-scheme" content="dark" />
 
     <!-- Primary SEO -->
-    <title>Chaos Dice Online! – A Free D6 That Drifts Into Chaos</title>
+    <title>Chaos Dice Online! – The D6 That Changes With Every Roll</title>
     <meta
       name="description"
-      content="Roll a free online D6 for D&amp;D and tabletop RPGs where every roll changes the die. The face you roll gains 1, its opposite loses 1, and the numbers drift into chaos."
+      content="A free online D6 for D&amp;D and other tabletop RPGs. The face you roll goes up by 1 and the opposite face goes down, so the longer you play, the wilder it gets."
     />
     <link rel="canonical" href="https://chaosdice.online/" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
@@ -20,10 +20,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Chaos Dice Online!" />
     <meta property="og:url" content="https://chaosdice.online/" />
-    <meta property="og:title" content="Chaos Dice Online! – A Free D6 That Drifts Into Chaos" />
+    <meta property="og:title" content="Chaos Dice Online! – The D6 That Changes With Every Roll" />
     <meta
       property="og:description"
-      content="One die. Six faces. Every roll bends fate a little further. A free, seeded D6 for D&amp;D and tabletop RPGs."
+      content="A free D6 for D&amp;D that remembers every roll. The face you roll goes up, the opposite face goes down, and things get weird fast."
     />
     <meta property="og:image" content="https://chaosdice.online/og-image.png" />
     <meta property="og:image:width" content="1200" />
@@ -31,10 +31,10 @@
     <meta property="og:image:alt" content="An ivory die on a crimson felt table beside the words Chaos Dice Online!" />
     <meta property="og:locale" content="en_US" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Chaos Dice Online! – A Free D6 That Drifts Into Chaos" />
+    <meta name="twitter:title" content="Chaos Dice Online! – The D6 That Changes With Every Roll" />
     <meta
       name="twitter:description"
-      content="One die. Six faces. Every roll bends fate a little further. A free, seeded D6 for D&amp;D and tabletop RPGs."
+      content="A free D6 for D&amp;D that remembers every roll. The face you roll goes up, the opposite face goes down, and things get weird fast."
     />
     <meta name="twitter:image" content="https://chaosdice.online/og-image.png" />
 
@@ -51,7 +51,7 @@
         "@type": "WebApplication",
         "name": "Chaos Dice Online!",
         "url": "https://chaosdice.online/",
-        "description": "A free online D6 for D&D and tabletop RPGs where every roll changes the die: the rolled face gains 1 and its opposite loses 1, so the numbers drift into chaos.",
+        "description": "A free online D6 for D&D and other tabletop RPGs. The face you roll goes up by 1 and the opposite face goes down, so the longer you play, the wilder it gets.",
         "applicationCategory": "GameApplication",
         "genre": "Tabletop RPG dice roller",
         "operatingSystem": "Any",
@@ -76,13 +76,13 @@
     <section class="landing" id="landing">
       <div class="landing-inner">
         <h1 class="landing-title"><span>Chaos Dice</span> <span>Online!</span></h1>
-        <p class="landing-tag">One die. Six faces. Every roll bends fate a little further.</p>
+        <p class="landing-tag">The die remembers every roll.</p>
         <p class="landing-desc">
-          A free online D6 for D&amp;D and tabletop RPGs. Every face starts at zero. Each roll, the face
-          you roll gains one and its opposite loses one, until the numbers run wild. Your character's
-          name seeds your fate.
+          Every face starts at zero. Whatever you roll goes up by one, and the face on the other side
+          goes down by one. Keep rolling and the numbers get weird. It's free, made for D&amp;D or any
+          tabletop game, and your character's name decides how it all plays out.
         </p>
-        <noscript><p class="landing-noscript">Chaos Dice Online! needs JavaScript enabled to roll the die.</p></noscript>
+        <noscript><p class="landing-noscript">Turn on JavaScript to roll the die.</p></noscript>
         <div class="landing-actions">
           <button class="btn primary play" id="playBtn" type="button">Play</button>
           <button class="btn ghost how" type="button" data-info>
@@ -92,7 +92,7 @@
         </div>
         <a class="repo-link" href="https://github.com/drewdotpro/chaosdice.online" target="_blank" rel="noopener">
           <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-          Free and open source on GitHub
+          Open source on GitHub
         </a>
       </div>
     </section>
@@ -118,7 +118,7 @@
             <span class="label">Rolls</span>
             <span class="value" id="rollCount">0</span>
           </div>
-          <button class="btn ghost small" id="resetBtn" type="button">Reset</button>
+          <button class="btn ghost small" id="resetBtn" type="button">Start over</button>
         </div>
       </header>
 
@@ -131,19 +131,19 @@
             <div class="result-value" id="resultValue">&nbsp;</div>
           </div>
           <button class="btn primary roll" id="rollBtn" type="button">Roll</button>
-          <p class="hint">Tap the die, press the button, or hit <kbd>Space</kbd>.</p>
+          <p class="hint">Click the die or press <kbd>Space</kbd> to roll.</p>
         </section>
 
         <aside class="panel">
           <section class="card">
             <h2>Faces</h2>
             <div class="hud" id="hud"></div>
-            <p class="note">After each roll, the face shown gains 1 and its opposite loses 1.</p>
+            <p class="note">After each roll, the face that landed goes up by 1 and the opposite face goes down by 1.</p>
           </section>
           <section class="card history-card">
             <h2>History</h2>
             <ol class="history" id="history"></ol>
-            <p class="empty" id="historyEmpty">No rolls yet.</p>
+            <p class="empty" id="historyEmpty">Nothing rolled yet.</p>
           </section>
         </aside>
       </main>
@@ -151,61 +151,62 @@
 
     <dialog class="modal" id="startModal">
       <form method="dialog" id="startForm" novalidate>
-        <h2>Who rolls the bones?</h2>
+        <h2>Who's rolling?</h2>
         <p class="sub">
-          Your character's name is your seed. Same name, same fate. Coming back without a save?
-          Enter your last roll count to pick up where you left off.
+          Your character's name sets the order of every roll, so the same name always gets the same
+          results. On a new device? Enter your roll count and you'll pick up exactly where you left off.
         </p>
         <label>
           <span>Character name</span>
           <input id="nameInput" name="name" autocomplete="off" maxlength="80" required placeholder="e.g. Thalia Ironwood" />
         </label>
         <label>
-          <span>Roll count <em>(leave blank for a new player)</em></span>
+          <span>Roll count <em>(leave blank if you're new)</em></span>
           <input id="rollsInput" name="rolls" type="number" inputmode="numeric" min="0" step="1" value="" />
         </label>
         <p class="error" id="formError" role="alert"></p>
         <div class="actions">
           <button class="btn ghost" type="button" id="startBack">Back</button>
-          <button class="btn primary" type="submit">Begin</button>
+          <button class="btn primary" type="submit">Start rolling</button>
         </div>
       </form>
     </dialog>
 
     <dialog class="modal info-modal" id="infoModal" aria-labelledby="infoTitle">
       <form method="dialog">
-        <h2 id="infoTitle">How Chaos Dice Online! works</h2>
+        <h2 id="infoTitle">How it works</h2>
         <div class="info-body">
           <p>
-            This is a six-sided die with faces <strong>A–F</strong>, and every face starts at
-            <strong>0</strong>. The numbers don't stay put.
+            It's a six-sided die with faces labelled <strong>A</strong> to <strong>F</strong>. Every face
+            starts at <strong>0</strong>, but they don't stay there.
           </p>
           <ol>
-            <li><strong>Roll.</strong> The die lands with one face on top. That face's number is your result.</li>
+            <li><strong>Roll.</strong> Whichever face lands on top, its number is your result.</li>
             <li>
-              <strong>Then the chaos.</strong> The face you rolled gains <strong>+1</strong>, and the face
-              opposite it loses <strong>1</strong>. Opposites are A↔F, B↔E and C↔D.
+              <strong>The die changes.</strong> That face goes up by <strong>1</strong> and the face opposite
+              it goes down by <strong>1</strong>. The opposite pairs are A and F, B and E, and C and D.
             </li>
-            <li><strong>Repeat.</strong> Over many rolls, faces drift far above or below zero.</li>
+            <li><strong>Keep rolling.</strong> Over time some faces climb high and others sink below zero.</li>
           </ol>
           <p>
-            <span class="swatch pos">Blue</span> numbers are positive, and bluer means higher.
-            <span class="swatch neg">Red</span> numbers are negative, and redder means lower.
+            <span class="swatch pos">Blue</span> numbers are positive: the bluer, the higher.
+            <span class="swatch neg">Red</span> numbers are negative: the redder, the lower.
             <span class="swatch zero">Black</span> is zero.
           </p>
-          <h3>Your fate is sealed</h3>
+          <h3>Same name, same rolls</h3>
           <p>
-            Your character's name is the seed. The same name always gives the same rolls in the same
-            order. Capitals and extra spaces don't matter. Progress is saved on this device.
+            Your character's name decides every roll in advance, so the same name always gets the same
+            results in the same order. Capitals and extra spaces don't matter. Your progress saves on
+            this device.
           </p>
           <p>
-            Playing on another device, or lost your save? Enter the same name and your roll count, and
-            your die is rebuilt exactly as you left it. It runs on the honour system.
+            On a new device, or lost your save? Enter the same name and your roll count, and your die
+            comes back exactly as you left it. We trust you not to fudge the count.
           </p>
           <h3>Controls</h3>
           <p>
-            Tap the die, press <strong>Roll</strong>, or hit <kbd>Space</kbd>. The speaker button turns
-            sound on and off. <strong>Reset</strong> clears your saved character from this device.
+            Tap the die, press <strong>Roll</strong> or hit <kbd>Space</kbd>. The speaker button turns
+            sound on or off. <strong>Start over</strong> clears your character from this device.
           </p>
         </div>
         <div class="actions">
@@ -216,14 +217,14 @@
 
     <dialog class="modal" id="resetModal">
       <form method="dialog">
-        <h2>Reset?</h2>
+        <h2>Start over?</h2>
         <p class="sub">
-          This clears your saved character from this device. Write down your name and roll count
-          (<strong id="resetSummary"></strong>) if you want to resume later.
+          This removes your character from this device. To come back to it later, note down your name
+          and roll count: <strong id="resetSummary"></strong>.
         </p>
         <div class="actions">
-          <button class="btn ghost" value="cancel">Cancel</button>
-          <button class="btn danger" value="confirm">Reset</button>
+          <button class="btn ghost" value="cancel">Keep playing</button>
+          <button class="btn danger" value="confirm">Start over</button>
         </div>
       </form>
     </dialog>

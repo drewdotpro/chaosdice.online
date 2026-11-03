@@ -45,7 +45,7 @@ function createDie(container) {
     return new Die(container);
   } catch (err) {
     console.warn('3D die unavailable, using a simple fallback.', err);
-    container.innerHTML = '<p class="no-webgl">Your browser couldn’t start 3D graphics, but the dice still roll. Your results appear below.</p>';
+    container.innerHTML = '<p class="no-webgl">Your browser can’t show the 3D die, but rolling still works. Your results show up below.</p>';
     const center = () => {
       const r = container.getBoundingClientRect();
       return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
@@ -338,10 +338,10 @@ els.startForm.addEventListener('submit', (e) => {
   const rollsRaw = els.rollsInput.value.trim();
   const rolls = rollsRaw === '' ? 0 : Number(rollsRaw);
   let err = '';
-  if (!name) err = 'Your character needs a name.';
+  if (!name) err = 'Give your character a name first.';
   // A number input reports '' for unparseable text (e.g. letters in Firefox), so check badInput too.
-  else if (els.rollsInput.validity.badInput || !Number.isInteger(rolls) || rolls < 0) err = 'Roll count must be a whole number, 0 or more.';
-  else if (rolls > MAX_ROLLS) err = `Roll count can't exceed ${MAX_ROLLS.toLocaleString('en-US')}.`;
+  else if (els.rollsInput.validity.badInput || !Number.isInteger(rolls) || rolls < 0) err = 'Roll count needs to be a whole number, like 0 or 42.';
+  else if (rolls > MAX_ROLLS) err = `That's more rolls than we can count. The limit is ${MAX_ROLLS.toLocaleString('en-US')}.`;
   if (err) {
     e.preventDefault();
     els.formError.textContent = err;
