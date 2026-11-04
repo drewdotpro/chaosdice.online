@@ -1,46 +1,40 @@
 <!doctype html>
 <!--
-  App icon source. Render at any square size:
-    icon.html?size=512            standard icon (transparent corners)
-    icon.html?size=512&maskable=1 full-bleed background, art inside the 80% safe zone
-    &scale=0.78                   override the art size (fraction of the icon)
+  App icon source: a gold lightning bolt on the crimson felt of the dice table.
+  Render at any square size and screenshot #icon:
+    icon.html?size=32              rounded tile with gold border (favicon / browser tabs)
+    icon.html?size=180&bleed=1     full-bleed square: the OS applies its own rounding
+                                   (apple-touch-icon, Android "any" icons)
+    icon.html?size=512&bleed=1&safe=1
+                                   full bleed with the bolt inside the 80% safe zone
+                                   (Android maskable icon)
+  public/favicon.svg is the same design as the rounded tile.
 -->
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet" />
 <style>
   html, body { margin: 0; background: transparent; overflow: hidden; }
-  .icon { position: relative; display: grid; place-items: center; }
-  .icon.maskable { background: radial-gradient(circle at 50% 45%, #3a2416, #120d0b 75%); }
-  .face {
-    display: grid; place-items: center; box-sizing: border-box;
-    background: linear-gradient(160deg, #fbf3e2, #e5d5b4);
-    border: solid #c8902a;
-    box-shadow: inset 0 0 0 1px rgba(90, 60, 30, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.35);
-  }
-  .face span {
-    font-family: 'Cinzel', Georgia, serif; font-weight: 700; line-height: 1;
-    color: #a3141c; text-shadow: 0 2px 0 rgba(255, 255, 255, 0.6);
-  }
+  #icon { display: block; }
 </style>
 </head>
 <body>
-  <div class="icon" id="icon"><div class="face"><span>!</span></div></div>
+  <div id="icon"></div>
   <script>
     const q = new URLSearchParams(location.search);
     const size = Number(q.get('size') || 512);
-    const maskable = q.get('maskable') === '1';
-    const icon = document.getElementById('icon');
-    const face = icon.firstElementChild;
-    icon.style.width = icon.style.height = size + 'px';
-    if (maskable) icon.classList.add('maskable');
-    const f = size * Number(q.get('scale') || (maskable ? 0.62 : 1));
-    face.style.width = face.style.height = f + 'px';
-    face.style.borderRadius = f * 0.22 + 'px';
-    face.style.borderWidth = Math.max(1, f * 0.06) + 'px';
-    face.firstElementChild.style.fontSize = f * 0.72 + 'px';
-    face.firstElementChild.style.marginTop = f * 0.06 + 'px';
+    const bleed = q.get('bleed') === '1';
+    const safe = q.get('safe') === '1';
+    const BOLT = 'M37 6 15 36h14l-5 22 25-32H35z';
+    const felt = '<defs><radialGradient id="f" cx=".5" cy=".42" r=".7"><stop offset="0" stop-color="#7a1c24"/><stop offset="1" stop-color="#3a0d12"/></radialGradient></defs>';
+    const bg = bleed
+      ? '<rect width="64" height="64" fill="url(#f)"/>'
+      : '<rect x="2" y="2" width="60" height="60" rx="14" fill="url(#f)" stroke="#c8902a" stroke-width="3"/>';
+    // Shrink the bolt around the centre so it sits inside the safe zone when needed.
+    const k = safe ? 0.72 : bleed ? 0.9 : 1;
+    const bolt = `<g transform="translate(32 32) scale(${k}) translate(-32 -32)"><path d="${BOLT}" fill="#f0c770" stroke="#fff3d6" stroke-width="1.5" stroke-linejoin="round"/></g>`;
+    document.getElementById('icon').innerHTML =
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="${size}" height="${size}">${felt}${bg}${bolt}</svg>`;
   </script>
 </body>
 </html>
