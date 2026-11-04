@@ -489,8 +489,8 @@ function makeFeltTexture() {
   const g = ctx.createRadialGradient(S / 2, S / 2, 0, S / 2, S / 2, S / 2);
   g.addColorStop(0, 'rgba(100, 24, 30, 1)');
   g.addColorStop(0.3, 'rgba(80, 18, 24, 1)');
-  g.addColorStop(0.42, 'rgba(52, 14, 16, 0.75)');
-  g.addColorStop(0.56, 'rgba(30, 14, 10, 0)');
+  g.addColorStop(0.42, 'rgba(50, 14, 34, 0.75)');
+  g.addColorStop(0.56, 'rgba(28, 18, 40, 0)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, S, S);
 

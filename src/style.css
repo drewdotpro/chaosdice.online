@@ -7,8 +7,9 @@
 @import '@fontsource/eb-garamond/400-italic.css';
 
 :root {
-  --table: #120d0b;
-  --table-2: #2a1a12;
+  --table: #0b0712;
+  --table-2: #1c1228;
+  --table-glow: #2f1d40;
   --gold: #c8902a;
   --gold-soft: #e4b965;
   --parchment: #f1e6cf;
@@ -32,7 +33,7 @@ body {
   font-family: var(--font-body);
   font-size: 18px;
   background:
-    radial-gradient(ellipse at 50% 35%, #3a2416 0%, var(--table-2) 35%, var(--table) 80%) fixed,
+    radial-gradient(ellipse at 50% 35%, var(--table-glow) 0%, var(--table-2) 35%, var(--table) 80%) fixed,
     var(--table);
   -webkit-tap-highlight-color: transparent;
 }
@@ -272,7 +273,7 @@ kbd {
   background: linear-gradient(180deg, var(--parchment), var(--parchment-2));
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
 }
-.modal::backdrop { background: rgba(8, 5, 3, 0.75); backdrop-filter: blur(3px); }
+.modal::backdrop { background: rgba(11, 7, 18, 0.75); backdrop-filter: blur(3px); }
 .modal form { display: flex; flex-direction: column; gap: 14px; padding: 22px 22px 24px; }
 .modal h2 { margin: 0; font-family: var(--font-display); font-size: 1.4rem; color: #5a3a10; }
 .modal .sub { margin: 0; color: var(--ink-soft); font-size: 1rem; }
