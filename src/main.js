@@ -1,6 +1,7 @@
 import { FACES, MAX_ROLLS, opposite, replay, roll, valueColor } from './chaos.js';
 import { Die } from './die.js';
 import { Effects } from './effects.js';
+import { cardToFile, drawShareCard, nativeShare, shareFilename, shareText } from './share.js';
 import rollSoundUrl from './assets/dice-roll.mp3';
 import changeSoundUrl from './assets/change-magic.mp3';
 
@@ -27,6 +28,13 @@ const els = {
   resetModal: $('resetModal'),
   resetSummary: $('resetSummary'),
   muteBtn: $('muteBtn'),
+  shareBtn: $('shareBtn'),
+  shareModal: $('shareModal'),
+  sharePreview: $('sharePreview'),
+  shareCaption: $('shareCaption'),
+  shareCopy: $('shareCopy'),
+  shareDownload: $('shareDownload'),
+  shareNative: $('shareNative'),
 };
 
 let state = null; // { name, seed, rolls, values, history }
@@ -58,6 +66,7 @@ function createDie(container) {
       showFace() {},
       finishMorph() {},
       morphFace() { return Promise.resolve(); },
+      snapshot() { return null; },
       screenPoint: center,
       roll() {
         this.rolling = true;
@@ -208,6 +217,7 @@ function renderMeta() {
   els.character.hidden = false;
   els.charName.textContent = state.name;
   els.rollCount.textContent = state.rolls.toLocaleString('en-US');
+  els.shareBtn.hidden = state.rolls === 0; // nothing to show off before the first roll
 }
 
 function renderResult(entry) {
@@ -375,6 +385,7 @@ els.resetModal.addEventListener('close', () => {
   state = null;
   lastFace = -1;
   els.character.hidden = true;
+  els.shareBtn.hidden = true;
   els.hud.innerHTML = '';
   els.history.innerHTML = '';
   els.historyEmpty.hidden = false;
@@ -382,6 +393,64 @@ els.resetModal.addEventListener('close', () => {
   els.resultValue.innerHTML = '&nbsp;';
   die.setValues([0, 0, 0, 0, 0, 0], -1);
   showLanding();
+});
+
+// ---------- share my die ----------
+// Phones: the native share sheet with the image and a caption. Elsewhere (or if
+// the browser refuses), a dialog with a preview, a download button and the caption.
+let shareUrl = null;
+let shareFile = null;
+// Phones and tablets (no precise pointer) go straight to the native share sheet.
+const TOUCH_FIRST = window.matchMedia('(pointer: coarse)').matches;
+els.shareBtn.addEventListener('click', async () => {
+  if (!state || state.rolls === 0 || die.rolling) return;
+  completeSettle(); // show final values, not a face mid-transformation
+  const card = drawShareCard({
+    name: state.name,
+    rolls: state.rolls,
+    values: state.values,
+    last: state.history.at(-1) ?? null,
+    dieImage: die.snapshot(),
+  });
+  const text = shareText(state);
+  let file;
+  try {
+    file = await cardToFile(card, shareFilename(state.name, state.rolls));
+  } catch {
+    return;
+  }
+  // Touch devices: straight to the native share sheet. Desktop: our dialog, since
+  // people there mostly want to download or copy (the system sheet offers neither).
+  if (TOUCH_FIRST) {
+    const result = await nativeShare(file, text);
+    if (result !== 'unsupported') return; // shared, or the player cancelled the sheet
+  }
+  if (shareUrl) URL.revokeObjectURL(shareUrl);
+  shareUrl = URL.createObjectURL(file);
+  shareFile = file;
+  els.sharePreview.src = shareUrl;
+  els.shareDownload.href = shareUrl;
+  els.shareDownload.download = file.name;
+  els.shareCaption.textContent = text;
+  els.shareCopy.textContent = 'Copy text';
+  els.shareNative.hidden = !(navigator.canShare && navigator.canShare({ files: [file] }));
+  els.shareModal.showModal();
+});
+els.shareNative.addEventListener('click', () => {
+  if (shareFile) nativeShare(shareFile, els.shareCaption.textContent);
+});
+els.shareCopy.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(els.shareCaption.textContent);
+    els.shareCopy.textContent = 'Copied!';
+  } catch {
+    // Clipboard blocked: select the caption so it can be copied by hand.
+    const range = document.createRange();
+    range.selectNodeContents(els.shareCaption);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
 });
 
 // "How it works" — available from the landing screen and the header.

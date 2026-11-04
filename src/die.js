@@ -265,6 +265,30 @@ export class Die {
     this.dirty = true;
   }
 
+  /**
+   * A square canvas snapshot centred on the die, for the share card. Renders a
+   * frame and copies it immediately (WebGL clears its buffer after each frame).
+   */
+  snapshot(size = 900) {
+    // Render at a higher pixel ratio for a crisp image, then restore. The next
+    // regular frame redraws at normal resolution, so nothing visibly changes.
+    const ratio = this.renderer.getPixelRatio();
+    this.renderer.setPixelRatio(Math.max(ratio, 3));
+    this.renderer.render(this.scene, this.camera);
+    const src = this.renderer.domElement;
+    const p = this.die.position.clone();
+    p.project(this.camera);
+    const cx = ((p.x + 1) / 2) * src.width;
+    const cy = ((1 - p.y) / 2) * src.height;
+    const side = Math.min(src.width, src.height) * 0.68; // tight on the die, a little felt around it
+    const out = document.createElement('canvas');
+    out.width = out.height = size;
+    out.getContext('2d').drawImage(src, cx - side / 2, cy - side / 2, side, side, 0, 0, size, size);
+    this.renderer.setPixelRatio(ratio);
+    this.dirty = true;
+    return out;
+  }
+
   /** Page coordinates of a point on the die (default: where it meets the table). */
   screenPoint(yOffset = TABLE_Y) {
     const p = this.die.position.clone();

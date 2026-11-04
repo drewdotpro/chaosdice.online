@@ -489,3 +489,40 @@ body:not(.landing-mode) .landing { display: none; }
 .modal input[type='number'] { appearance: textfield; -moz-appearance: textfield; }
 .modal input[type='number']::-webkit-inner-spin-button,
 .modal input[type='number']::-webkit-outer-spin-button { -webkit-appearance: none; appearance: none; margin: 0; }
+
+/* ---------- share my die ---------- */
+.share-btn { display: inline-flex; align-items: center; gap: 8px; padding: 9px 22px; font-size: 0.9rem; }
+.share-btn[hidden] { display: none; }
+.share-btn svg { width: 18px; height: 18px; }
+.share-modal { width: min(460px, calc(100vw - 32px)); }
+.share-modal form { position: relative; max-height: min(92vh, 900px); }
+.share-preview {
+  display: block;
+  width: 100%;
+  max-height: 58vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+.share-caption { margin: 0; font-size: 0.98rem; color: var(--ink-soft); user-select: text; }
+.share-actions { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.share-actions [hidden] { display: none; }
+.share-actions .btn { text-decoration: none; text-align: center; padding-left: 10px; padding-right: 10px; white-space: nowrap; }
+.share-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #7a4f14;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.share-close:hover { background: rgba(122, 79, 20, 0.1); }
+@media (max-width: 480px) {
+  .share-actions .btn { font-size: 0.8rem; letter-spacing: 0.03em; }
+}

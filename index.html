@@ -131,6 +131,10 @@
             <div class="result-value" id="resultValue">&nbsp;</div>
           </div>
           <button class="btn primary roll" id="rollBtn" type="button">Roll</button>
+          <button class="btn ghost share-btn" id="shareBtn" type="button" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            Share my die
+          </button>
           <p class="hint">Click the die or press <kbd>Space</kbd> to roll.</p>
         </section>
 
@@ -212,6 +216,20 @@
         <div class="actions">
           <button class="btn primary" value="close">Got it</button>
         </div>
+      </form>
+    </dialog>
+
+    <dialog class="modal share-modal" id="shareModal" aria-labelledby="shareTitle">
+      <form method="dialog">
+        <h2 id="shareTitle">Share your die</h2>
+        <img class="share-preview" id="sharePreview" alt="Your die, its latest roll and all six faces" />
+        <p class="share-caption" id="shareCaption"></p>
+        <div class="actions share-actions">
+          <button class="btn ghost" type="button" id="shareCopy">Copy text</button>
+          <button class="btn ghost" type="button" id="shareNative" hidden>Share…</button>
+          <a class="btn primary" id="shareDownload" download>Download</a>
+        </div>
+        <button class="share-close" value="close" aria-label="Close">×</button>
       </form>
     </dialog>
 
